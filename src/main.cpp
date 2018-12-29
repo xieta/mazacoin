@@ -31,7 +31,7 @@ using namespace boost;
 using namespace std;
 
 #if defined(NDEBUG)
-# error "Bitcoin cannot be compiled without assertions."
+# error "Maza cannot be compiled without assertions."
 #endif
 
 /**
@@ -73,7 +73,7 @@ static void CheckBlockIndex();
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "Bitcoin Signed Message:\n";
+const string strMessageMagic = "Maza Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -1235,15 +1235,22 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex)
 
 CAmount GetBlockValue(int nHeight, const CAmount& nFees)
 {
-    CAmount nSubsidy = 50 * COIN;
-    int halvings = nHeight / Params().SubsidyHalvingInterval();
+    CAmount nMinSubsidy = 1 * COIN;
+    CAmount nSubsidy = 5000 * COIN;
+    int halvings;
 
-    // Force block reward to zero when right shift is undefined.
-    if (halvings >= 64)
-        return nFees;
-
-    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+    if (Params().AllowMinDifficultyBlocks()) {
+        halvings = (nHeight-10) / Params().SubsidyHalvingInterval();
+        if (nHeight >= 10)
+            nSubsidy = nSubsidy / 5;
+    } else {
+        halvings = (nHeight-100000) / Params().SubsidyHalvingInterval();
+        if (nHeight >= 100000)
+            nSubsidy = nSubsidy / 5;
+    }
     nSubsidy >>= halvings;
+    if (nSubsidy < nMinSubsidy)
+        nSubsidy = nMinSubsidy;
 
     return nSubsidy + nFees;
 }

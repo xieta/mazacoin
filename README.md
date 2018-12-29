@@ -1,4 +1,12 @@
-Bitcoin Core integration/staging tree
+We are reorganizing this code so that it:
+1) is directly forked from it's bitcoin source
+2) produces proper gitian-builds
+3) moves all significant deviations from bitcoin out of the main code so differences betwee MAZA and BTC are clear
+4) provides a proper testnet environment
+
+
+
+Maza Core integration/staging tree
 =====================================
 
 [![Build Status](https://travis-ci.org/bitcoin/bitcoin.svg?branch=master)](https://travis-ci.org/bitcoin/bitcoin)
